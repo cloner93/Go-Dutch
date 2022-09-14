@@ -4,6 +4,7 @@ import com.milad.go_dutch.data.Debtor
 import com.milad.go_dutch.data.Transaction
 import com.milad.go_dutch.data.TransactionInfo
 import com.milad.go_dutch.data.TransactionType
+import kotlin.math.roundToLong
 
 class GoDutch(transactions: List<Transaction>) {
     private var totalAmount = TotalAmount()
@@ -16,6 +17,7 @@ class GoDutch(transactions: List<Transaction>) {
             transaction.payers.forEach { payer ->
                 payersInTransaction[payer.key] = payer.value
             }
+
             when (transaction.transactionType) {
                 TransactionType.EQUAL -> {
                     val debtorsCount = transaction.payType.payers.size
@@ -39,24 +41,24 @@ class GoDutch(transactions: List<Transaction>) {
                 else -> {}
             }
 
-//            totalAmount.totalCost += transaction.cost
-//            payersInTransaction.collocationPlusForEach(totalAmount.totalPayers)
-//            usersCostInTransaction.collocationPlusForEach(totalAmount.totalUserCost)
-
-            totalAmount.addTransactionInfo(transaction, payersInTransaction, usersCostInTransaction)
+            totalAmount.transactionInfoList.add(
+                TransactionInfo(
+                    transaction,
+                    payersInTransaction,
+                    usersCostInTransaction
+                )
+            )
         }
     }
 
-    fun calculate() {
-        //  test
-        totalAmount.totalTransactionInfoList.forEach { transactionInfo ->
+    fun calculate(): MutableList<TransactionInfo> {
+        totalAmount.transactionInfoList.forEach { transactionInfo ->
             println(transactionInfo.transaction.name)
-
-
             val creditors = mutableMapOf<Debtor, Double>()
             val debtors = mutableMapOf<Debtor, Double>()
             var sumCreditor = 0.0
             var sumDebtors = 0.0
+
             transactionInfo.usersCostInTransaction.forEach {
                 if (it.value < 0) {
                     creditors[it.key] = it.value
@@ -66,33 +68,28 @@ class GoDutch(transactions: List<Transaction>) {
                     sumDebtors += it.value
                 }
             }
-            val creditorsSorted = creditors.sort()
-            val debtorsSorted = debtors.sort()
 
-//            println(sumCreditor)
-//            println(sumDebtors)
-            println(-sumCreditor == sumDebtors)
+            if ((-sumCreditor).roundToLong() != sumDebtors.roundToLong())
+                throw Exception("we have wrong calculation. please check again.")
+
+            totalAmount.totalTransactionInfoList.add(
+                TransactionInfo(
+                    transactionInfo.transaction,
+                    creditors,
+                    debtors
+                )
+            )
         }
-        //  gheluon
-        //  hamom
+
+        return totalAmount.totalTransactionInfoList
     }
 }
 
 class TotalAmount {
-    //    var totalCost: Double = 0L
-//    val totalPayers = mutableMapOf<Debtor, Double>()
-//    val totalUserCost = mutableMapOf<Debtor, Double>()
+    val transactionInfoList = mutableListOf<TransactionInfo>()
     val totalTransactionInfoList = mutableListOf<TransactionInfo>()
 
-    fun addTransactionInfo(
-        transaction: Transaction,
-        payersInTransaction: MutableMap<Debtor, Double>,
-        usersCostInTransaction: MutableMap<Debtor, Double>
-    ) = totalTransactionInfoList.add(
-        TransactionInfo(
-            transaction,
-            payersInTransaction,
-            usersCostInTransaction
-        )
-    )
+    fun sumOneByOne(){
+        // TODO
+    }
 }
