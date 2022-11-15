@@ -1,6 +1,5 @@
-package com.milad.go_dutch
+package com.milad.core.data
 
-import com.milad.go_dutch.data.Debtor
 
 fun MutableMap<Debtor, Double>.sort(): MutableMap<Debtor, Double> {
     return entries

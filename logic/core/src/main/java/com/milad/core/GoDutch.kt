@@ -1,9 +1,9 @@
-package com.milad.go_dutch
+package com.milad.core
 
-import com.milad.go_dutch.data.Debtor
-import com.milad.go_dutch.data.Transaction
-import com.milad.go_dutch.data.TransactionInfo
-import com.milad.go_dutch.data.TransactionType
+import com.milad.core.data.Debtor
+import com.milad.core.data.Transaction
+import com.milad.core.data.TransactionInfo
+import com.milad.core.data.TransactionType
 import kotlin.math.roundToLong
 
 class GoDutch(transactions: List<Transaction>) {
@@ -51,7 +51,7 @@ class GoDutch(transactions: List<Transaction>) {
         }
     }
 
-    fun calculate(): MutableList<TransactionInfo> {
+    fun calculateEachMember(): MutableList<TransactionInfo> {
         totalAmount.transactionInfoList.forEach { transactionInfo ->
             println(transactionInfo.transaction.name)
             val creditors = mutableMapOf<Debtor, Double>()

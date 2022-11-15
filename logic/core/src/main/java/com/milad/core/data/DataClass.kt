@@ -1,7 +1,4 @@
-package com.milad.go_dutch.data
-
-import com.milad.go_dutch.PayType
-
+package com.milad.core.data
 
 data class Debtor(val name: String)
 enum class TransactionType {
@@ -21,3 +18,13 @@ data class TransactionInfo(
     val payersInTransaction: MutableMap<Debtor, Double>,
     val usersCostInTransaction: MutableMap<Debtor, Double>
 )
+
+
+interface PayType {
+    val payers: List<Debtor>
+}
+
+class PayEqual(override val payers: List<Debtor>) : PayType
+class PayFamily(override val payers: List<Debtor>) : PayType
+class PayPercent(override val payers: List<Debtor>) : PayType
+class PayFix(override val payers: List<Debtor>) : PayType

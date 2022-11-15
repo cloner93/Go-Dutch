@@ -1,7 +1,8 @@
-package com.milad.go_dutch
+package com.milad.core
 
-import com.milad.go_dutch.data.*
-import com.milad.go_dutch.data.TransactionType
+import com.milad.core.data.Debtor
+import com.milad.core.data.PayEqual
+import com.milad.core.data.PayType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 
@@ -14,21 +15,26 @@ class GoDutchTest {
     @Test
     fun test_case_1() {
         val allUser = listOf(
-            Debtor("milad"), Debtor("mahdi"), Debtor("masoud"),
-            Debtor("abolfazl"), Debtor("hojat daee"),
-            Debtor("hamed nabi"), Debtor("hamed safar"),
-            Debtor("hamid ahmadreza"), Debtor("hamid safar"),
+            Debtor("milad"),
+            Debtor("mahdi"),
+            Debtor("masoud"),
+            Debtor("abolfazl"),
+            Debtor("hojat daee"),
+            Debtor("hamed nabi"),
+            Debtor("hamed safar"),
+            Debtor("hamid ahmadreza"),
+            Debtor("hamid safar"),
         )
         val payTypeAllUser: PayType = PayEqual(allUser)
 
-        val gheluon = Transaction(
+        val gheluon = com.milad.core.data.Transaction(
             "Gheluon",
             180000.0,
             mapOf(Debtor("hamed safar") to 180_000.0),
-            TransactionType.EQUAL,
+            com.milad.core.data.TransactionType.EQUAL,
             payTypeAllUser
         )
-        val hamom = Transaction(
+        val hamom = com.milad.core.data.Transaction(
             "Hamom", 180_000.0, mapOf(
                 Debtor("milad") to 15_000.0,
                 Debtor("masoud") to 10_000.0,
@@ -36,11 +42,11 @@ class GoDutchTest {
                 Debtor("hamed safar") to 45_000.0,
                 Debtor("abolfazl") to 50_000.0,
                 Debtor("hamid safar") to 50_000.0
-            ), TransactionType.EQUAL, payTypeAllUser
+            ), com.milad.core.data.TransactionType.EQUAL, payTypeAllUser
         )
 
         goDutch = GoDutch(listOf(hamom, gheluon))
-        val list = goDutch.calculate()
+        val list = goDutch.calculateEachMember()
 
         assertNotNull(list)
         assertEquals("transaction size", list.size, 2)
@@ -56,20 +62,22 @@ class GoDutchTest {
     @Test
     fun test_case_2() {
         val allUser = listOf(
-            Debtor("milad"), Debtor("mohammad"), Debtor("ehsan")
+            Debtor("milad"),
+            Debtor("mohammad"),
+            Debtor("ehsan")
         )
         val payTypeAllUser: PayType = PayEqual(allUser)
 
-        val kabab = Transaction(
+        val kabab = com.milad.core.data.Transaction(
             "kabab",
             160_000.0,
             mapOf(Debtor("ehsan") to 160_000.0),
-            TransactionType.EQUAL,
+            com.milad.core.data.TransactionType.EQUAL,
             payTypeAllUser
         )
 
         goDutch = GoDutch(listOf(kabab))
-        val list = goDutch.calculate()
+        val list = goDutch.calculateEachMember()
 
         assertNotNull(list)
         assertEquals(list.size, 1)
@@ -95,30 +103,30 @@ class GoDutchTest {
         )
         val payTypeAllUser: PayType = PayEqual(allUser)
 
-        val SibZamini = Transaction(
+        val SibZamini = com.milad.core.data.Transaction(
             "SibZamini",
             400_000.0,
             mapOf(Debtor("amin") to 400_000.0),
-            TransactionType.EQUAL,
+            com.milad.core.data.TransactionType.EQUAL,
             payTypeAllUser
         )
-        val Masala = Transaction(
+        val Masala = com.milad.core.data.Transaction(
             "Masala",
             200_000.0,
             mapOf(Debtor("milad") to 200_000.0),
-            TransactionType.EQUAL,
+            com.milad.core.data.TransactionType.EQUAL,
             payTypeAllUser
         )
-        val Sham = Transaction(
+        val Sham = com.milad.core.data.Transaction(
             "Sham",
             1_400_000.0,
             mapOf(Debtor("mahan") to 1_400_000.0),
-            TransactionType.EQUAL,
+            com.milad.core.data.TransactionType.EQUAL,
             payTypeAllUser
         )
 
         goDutch = GoDutch(listOf(SibZamini, Masala, Sham))
-        val list = goDutch.calculate()
+        val list = goDutch.calculateEachMember()
 
         assertNotNull(list)
         assertEquals(list.size, 3)
