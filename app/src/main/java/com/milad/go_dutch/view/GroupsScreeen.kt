@@ -27,8 +27,8 @@ fun HomeScreen() {
         "group a", "group b", "group c", "group d", "group e", "group f"
     )
     Scaffold(
-        topBar = { TopAppBar() },
-        floatingActionButton = { HomeFloatingActionButton(lazyListState.isScrollingUp()) {} },
+        topBar = { TopAppBar("Groups") },
+        floatingActionButton = { HomeFloatingActionButton(lazyListState.isScrollingUp(),"Create") {} },
         content = HomeScreenContent(lazyListState, groupList)
     )
 }
@@ -80,7 +80,7 @@ fun listItemPreview() {
 }
 
 @Composable
-private fun LazyListState.isScrollingUp(): Boolean {
+fun LazyListState.isScrollingUp(): Boolean {
     var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
     var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
     return remember(this) {
@@ -98,9 +98,10 @@ private fun LazyListState.isScrollingUp(): Boolean {
 }
 
 @Composable
-private fun HomeFloatingActionButton(
+fun HomeFloatingActionButton(
     extended: Boolean,
-    onClick: () -> Unit
+    text: String = "",
+    onClick: () -> Unit,
 ) {
     FloatingActionButton(onClick = onClick) {
         Row(
@@ -112,7 +113,7 @@ private fun HomeFloatingActionButton(
             )
             AnimatedVisibility(visible = extended) {
                 Text(
-                    text = "Create Group",
+                    text = text,
                     modifier = Modifier.padding(start = 8.dp, top = 3.dp)
                 )
             }
@@ -129,16 +130,16 @@ fun groupsScreenPreview() {
 @Preview
 @Composable
 fun expendedPreview() {
-    HomeFloatingActionButton(false) {}
+    HomeFloatingActionButton(false,"Create Group") {}
 }
 
 @Preview
 @Composable
 fun collapsedPreview() {
-    HomeFloatingActionButton(true) {}
+    HomeFloatingActionButton(true,"Create Group") {}
 }
 
 @Composable
-fun TopAppBar() {
-    TopAppBar(title = { Text("Groups") })
+fun TopAppBar(title: String) {
+    TopAppBar(title = { Text(title) })
 }
