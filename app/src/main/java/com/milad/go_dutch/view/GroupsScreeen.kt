@@ -28,7 +28,7 @@ fun HomeScreen() {
     )
     Scaffold(
         topBar = { TopAppBar("Groups") },
-        floatingActionButton = { HomeFloatingActionButton(lazyListState.isScrollingUp(),"Create") {} },
+        floatingActionButton = { HomeFloatingActionButton(lazyListState.isScrollingUp(),"Create Group") {} },
         content = HomeScreenContent(lazyListState, groupList)
     )
 }

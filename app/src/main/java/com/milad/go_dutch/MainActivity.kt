@@ -9,6 +9,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.milad.go_dutch.ui.theme.GoDutchTheme
 import com.milad.go_dutch.view.CreateGroupScreen
+import com.milad.go_dutch.view.TransactionsScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +21,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    CreateGroupScreen()
+                    TransactionsScreen()
                 }
             }
         }
