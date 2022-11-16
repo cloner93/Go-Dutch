@@ -1,7 +1,6 @@
 package com.milad.go_dutch.view
 
 import android.annotation.SuppressLint
-import android.preference.PreferenceActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,14 +12,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun HomeScreen() {
     val lazyListState = rememberLazyListState()
-    val groupList = listOf("group a", "group b", "group c", "group d", "group e", "group f")
+    val groupList = listOf(
+        "group a", "group b", "group c", "group d", "group e", "group f"
+    )
     Scaffold(
         topBar = { TopAppBar() },
         floatingActionButton = { HomeFloatingActionButton(lazyListState.isScrollingUp()) {} },
@@ -35,6 +40,7 @@ private fun HomeScreenContent(
 ): @Composable (PaddingValues) -> Unit =
     {
         LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 32.dp),
             state = lazyListState,
             modifier = Modifier
@@ -42,14 +48,36 @@ private fun HomeScreenContent(
                 .fillMaxWidth()
         ) {
             items(groupList) {
-                Card() {
-
-                }
-                Text(text = it)
+                listItem(it)
             }
 
         }
     }
+
+@Composable
+private fun listItem(it: String) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = 4.dp
+    ) {
+        Row(Modifier.padding(8.dp)) {
+            Text(
+                text = it.repeat(10),
+                textAlign = TextAlign.Start,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun listItemPreview() {
+    listItem("Milad Targholi")
+}
 
 @Composable
 private fun LazyListState.isScrollingUp(): Boolean {
