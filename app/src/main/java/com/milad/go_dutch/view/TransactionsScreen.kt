@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.milad.core.data.*
 
 @Composable
 fun TransactionsScreen() {
@@ -41,12 +42,22 @@ fun TransactionsScreenContent(
     lazyListState: LazyListState
 ): @Composable (PaddingValues) -> Unit =
     {
-        val listItems = listOf<String>(
-            "Last night dinner",
-            "weekend fast food",
-            "train ticket",
-            "the cost of repairing the house",
+        val payers = mapOf(
+            Debtor("milad") to 5_000.0,
+            Debtor("masoud") to 7_000.0,
         )
+        val allUser = listOf(
+            Debtor("milad"),
+            Debtor("mahdi"),
+            Debtor("masoud")
+        )
+        val list: List<Transaction> = listOf(
+            Transaction("Last night dinner", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
+            Transaction("weekend fast food", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
+            Transaction("train ticket", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
+            Transaction("the cost of repairing the house", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
+        )
+
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 32.dp),
@@ -55,7 +66,7 @@ fun TransactionsScreenContent(
                 .fillMaxHeight()
                 .fillMaxWidth()
         ) {
-            items(listItems) {
+            items(list) {
                 ListItem(it)
             }
             item {
@@ -65,7 +76,7 @@ fun TransactionsScreenContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-                        .clickable {  }
+                        .clickable { }
                 ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = null)
                     Text(text = "Add Transaction")
@@ -75,7 +86,7 @@ fun TransactionsScreenContent(
     }
 
 @Composable
-private fun ListItem(transactionName: String) {
+private fun ListItem(transaction: Transaction) {
     var expended by remember { mutableStateOf(false) }
 
     Card(
@@ -91,34 +102,30 @@ private fun ListItem(transactionName: String) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Text(text = transactionName)
-                Text(text = "13.000")
+                Text(text = transaction.name)
+                Text(text = transaction.cost.toString())
             }
             AnimatedVisibility(expended) {
                 Column() {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("Payers:")
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        Text(text = "Milad Targholi")
-                        Text(text = "6.000")
+                    transaction.payers.forEach(){ (payer , cost) ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceAround
+                        ) {
+                            Text(text = payer.name)
+                            Text(text = cost.toString())
+                        }
                     }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        Text(text = "Milad Targholi")
-                        Text(text = "7.000")
-                    }
+
                     Text("Debtors:")
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
                         Text(text = "All Member")
-                        Text(text = "EQUAL")
+                        Text(text = transaction.transactionType.name)
                     }
                     Row(
                         modifier = Modifier

@@ -3,6 +3,7 @@ package com.milad.core
 import com.milad.core.data.Debtor
 import com.milad.core.data.PayEqual
 import com.milad.core.data.PayType
+import com.milad.core.data.TransactionType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 
@@ -31,7 +32,7 @@ class GoDutchTest {
             "Gheluon",
             180000.0,
             mapOf(Debtor("hamed safar") to 180_000.0),
-            com.milad.core.data.TransactionType.EQUAL,
+            TransactionType.EQUAL,
             payTypeAllUser
         )
         val hamom = com.milad.core.data.Transaction(
@@ -42,7 +43,7 @@ class GoDutchTest {
                 Debtor("hamed safar") to 45_000.0,
                 Debtor("abolfazl") to 50_000.0,
                 Debtor("hamid safar") to 50_000.0
-            ), com.milad.core.data.TransactionType.EQUAL, payTypeAllUser
+            ), TransactionType.EQUAL, payTypeAllUser
         )
 
         goDutch = GoDutch(listOf(hamom, gheluon))
@@ -72,7 +73,7 @@ class GoDutchTest {
             "kabab",
             160_000.0,
             mapOf(Debtor("ehsan") to 160_000.0),
-            com.milad.core.data.TransactionType.EQUAL,
+            TransactionType.EQUAL,
             payTypeAllUser
         )
 
@@ -107,21 +108,21 @@ class GoDutchTest {
             "SibZamini",
             400_000.0,
             mapOf(Debtor("amin") to 400_000.0),
-            com.milad.core.data.TransactionType.EQUAL,
+            TransactionType.EQUAL,
             payTypeAllUser
         )
         val Masala = com.milad.core.data.Transaction(
             "Masala",
             200_000.0,
             mapOf(Debtor("milad") to 200_000.0),
-            com.milad.core.data.TransactionType.EQUAL,
+            TransactionType.EQUAL,
             payTypeAllUser
         )
         val Sham = com.milad.core.data.Transaction(
             "Sham",
             1_400_000.0,
             mapOf(Debtor("mahan") to 1_400_000.0),
-            com.milad.core.data.TransactionType.EQUAL,
+            TransactionType.EQUAL,
             payTypeAllUser
         )
 
