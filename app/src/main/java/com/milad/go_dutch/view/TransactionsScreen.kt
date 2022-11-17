@@ -5,15 +5,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,7 +28,8 @@ fun TransactionsScreen() {
         floatingActionButton = {
             HomeFloatingActionButton(
                 lazyListState.isScrollingUp(),
-                "Create Transaction"
+                "Calculate",
+                Icons.Default.Done
             ) {}
         },
         content = TransactionsScreenContent(lazyListState)
@@ -39,6 +41,12 @@ fun TransactionsScreenContent(
     lazyListState: LazyListState
 ): @Composable (PaddingValues) -> Unit =
     {
+        val listItems = listOf<String>(
+            "Last night dinner",
+            "weekend fast food",
+            "train ticket",
+            "the cost of repairing the house",
+        )
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 32.dp),
@@ -47,15 +55,28 @@ fun TransactionsScreenContent(
                 .fillMaxHeight()
                 .fillMaxWidth()
         ) {
+            items(listItems) {
+                ListItem(it)
+            }
             item {
-                listItem()
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .clickable {  }
+                ) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                    Text(text = "Add Transaction")
+                }
             }
         }
     }
 
 @Composable
-private fun listItem() {
-    var expended by remember { mutableStateOf(true) }
+private fun ListItem(transactionName: String) {
+    var expended by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -70,7 +91,7 @@ private fun listItem() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Text(text = "Last night diner")
+                Text(text = transactionName)
                 Text(text = "13.000")
             }
             AnimatedVisibility(expended) {

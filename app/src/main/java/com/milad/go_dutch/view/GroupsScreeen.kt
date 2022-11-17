@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,7 +29,13 @@ fun HomeScreen() {
     )
     Scaffold(
         topBar = { TopAppBar("Groups") },
-        floatingActionButton = { HomeFloatingActionButton(lazyListState.isScrollingUp(),"Create Group") {} },
+        floatingActionButton = {
+            HomeFloatingActionButton(
+                lazyListState.isScrollingUp(),
+                "Create Group",
+                Icons.Default.Add
+            ) {}
+        },
         content = HomeScreenContent(lazyListState, groupList)
     )
 }
@@ -101,6 +108,7 @@ fun LazyListState.isScrollingUp(): Boolean {
 fun HomeFloatingActionButton(
     extended: Boolean,
     text: String = "",
+    icon: ImageVector,
     onClick: () -> Unit,
 ) {
     FloatingActionButton(onClick = onClick) {
@@ -108,7 +116,7 @@ fun HomeFloatingActionButton(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Add,
+                imageVector = icon,
                 contentDescription = null
             )
             AnimatedVisibility(visible = extended) {
@@ -130,13 +138,13 @@ fun groupsScreenPreview() {
 @Preview
 @Composable
 fun expendedPreview() {
-    HomeFloatingActionButton(false,"Create Group") {}
+    HomeFloatingActionButton(false, "Create Group", Icons.Default.Add) {}
 }
 
 @Preview
 @Composable
 fun collapsedPreview() {
-    HomeFloatingActionButton(true,"Create Group") {}
+    HomeFloatingActionButton(true, "Create Group", Icons.Default.Add) {}
 }
 
 @Composable
