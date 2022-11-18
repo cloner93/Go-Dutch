@@ -1,7 +1,5 @@
 package com.milad.go_dutch.view
 
-import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -11,65 +9,73 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.milad.core.data.Group
+import com.milad.go_dutch.HomeFloatingActionButton
+import com.milad.go_dutch.MyTopAppBar
+import com.milad.go_dutch.data.groupA
+import com.milad.go_dutch.isScrollingUp
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun HomeScreen() {
+fun HomeScreen(groupList: SnapshotStateList<Group>) {
     val lazyListState = rememberLazyListState()
-    val groupList = listOf(
-        "group a", "group b", "group c", "group d", "group e", "group f"
-    )
     Scaffold(
-        topBar = { TopAppBar("Groups") },
+        topBar = { MyTopAppBar("Groups") },
         floatingActionButton = {
             HomeFloatingActionButton(
                 lazyListState.isScrollingUp(),
                 "Create Group",
                 Icons.Default.Add
-            ) {}
+            ) {
+                groupList.add(groupA)
+            }
         },
-        content = HomeScreenContent(lazyListState, groupList)
-    )
+    ) { padding ->
+        MainList(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxHeight()
+                .fillMaxWidth(),
+            listState = lazyListState,
+            groupList = groupList
+        )
+    }
 }
 
 @Composable
-private fun HomeScreenContent(
-    lazyListState: LazyListState,
-    groupList: List<String>
-): @Composable (PaddingValues) -> Unit =
-    {
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 32.dp),
-            state = lazyListState,
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-        ) {
-            items(groupList) {
-                listItem(it)
-            }
-
+private fun MainList(
+    modifier: Modifier,
+    listState: LazyListState,
+    groupList: SnapshotStateList<Group>
+) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 32.dp),
+        state = listState,
+        modifier = modifier
+    ) {
+        items(groupList) {
+            ListItem(it)
         }
     }
+}
 
 @Composable
-private fun listItem(it: String) {
+private fun ListItem(group: Group) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = 4.dp
     ) {
         Row(Modifier.padding(8.dp)) {
             Text(
-                text = it.repeat(10),
+                text = group.name,
                 textAlign = TextAlign.Start,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -82,72 +88,6 @@ private fun listItem(it: String) {
 
 @Preview
 @Composable
-fun listItemPreview() {
-    listItem("Milad Targholi")
-}
-
-@Composable
-fun LazyListState.isScrollingUp(): Boolean {
-    var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
-    var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
-    return remember(this) {
-        derivedStateOf {
-            if (previousIndex != firstVisibleItemIndex) {
-                previousIndex > firstVisibleItemIndex
-            } else {
-                previousScrollOffset >= firstVisibleItemScrollOffset
-            }.also {
-                previousIndex = firstVisibleItemIndex
-                previousScrollOffset = firstVisibleItemScrollOffset
-            }
-        }
-    }.value
-}
-
-@Composable
-fun HomeFloatingActionButton(
-    extended: Boolean,
-    text: String = "",
-    icon: ImageVector,
-    onClick: () -> Unit,
-) {
-    FloatingActionButton(onClick = onClick) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null
-            )
-            AnimatedVisibility(visible = extended) {
-                Text(
-                    text = text,
-                    modifier = Modifier.padding(start = 8.dp, top = 3.dp)
-                )
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun groupsScreenPreview() {
-    HomeScreen()
-}
-
-@Preview
-@Composable
-fun expendedPreview() {
-    HomeFloatingActionButton(false, "Create Group", Icons.Default.Add) {}
-}
-
-@Preview
-@Composable
-fun collapsedPreview() {
-    HomeFloatingActionButton(true, "Create Group", Icons.Default.Add) {}
-}
-
-@Composable
-fun TopAppBar(title: String) {
-    TopAppBar(title = { Text(title) })
+fun ListItemPreview() {
+    ListItem(group = groupA)
 }
