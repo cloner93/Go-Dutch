@@ -17,13 +17,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.milad.core.data.TransactionInfo
+import com.milad.go_dutch.MyTopAppBar
 
 @Composable
 fun CalculatedScreen() {
     val lazyListState = rememberLazyListState()
 
     Scaffold(
-        topBar = { TopAppBar("Calculated Transactions") },
+        topBar = { MyTopAppBar("Calculated Transactions") },
         content = calculatedScreenContent(lazyListState)
     )
 }

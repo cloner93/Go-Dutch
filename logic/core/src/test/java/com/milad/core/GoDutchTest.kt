@@ -1,9 +1,6 @@
 package com.milad.core
 
-import com.milad.core.data.Debtor
-import com.milad.core.data.PayEqual
-import com.milad.core.data.PayType
-import com.milad.core.data.TransactionType
+import com.milad.core.data.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 
@@ -35,7 +32,7 @@ class GoDutchTest {
             TransactionType.EQUAL,
             payTypeAllUser
         )
-        val hamom = com.milad.core.data.Transaction(
+        val hamom = Transaction(
             "Hamom", 180_000.0, mapOf(
                 Debtor("milad") to 15_000.0,
                 Debtor("masoud") to 10_000.0,

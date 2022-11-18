@@ -4,6 +4,10 @@ data class Debtor(val name: String)
 enum class TransactionType {
     EQUAL, FAMILY, PERCENT, FIX
 }
+data class Group(
+    val name: String,
+    val transactions:List<Transaction>
+)
 
 data class Transaction(
     val name: String,

@@ -19,13 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.milad.core.data.*
+import com.milad.go_dutch.HomeFloatingActionButton
+import com.milad.go_dutch.MyTopAppBar
+import com.milad.go_dutch.isScrollingUp
 
 @Composable
 fun TransactionsScreen() {
     val lazyListState = rememberLazyListState()
 
     Scaffold(
-        topBar = { TopAppBar("Create Transaction") },
+        topBar = { MyTopAppBar("Create Transaction") },
         floatingActionButton = {
             HomeFloatingActionButton(
                 lazyListState.isScrollingUp(),

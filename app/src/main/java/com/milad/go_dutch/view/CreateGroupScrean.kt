@@ -20,13 +20,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.milad.go_dutch.MyTopAppBar
 
 @Composable
 fun CreateGroupScreen() {
     val lazyListState = rememberLazyListState()
 
     Scaffold(
-        topBar = { TopAppBar("Create Group") },
+        topBar = { MyTopAppBar("Create Group") },
         content = CreateGroupContent(lazyListState)
     )
 }
