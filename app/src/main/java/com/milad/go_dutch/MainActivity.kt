@@ -14,6 +14,7 @@ import com.milad.go_dutch.data.groupList
 import com.milad.go_dutch.ui.theme.GoDutchTheme
 import com.milad.go_dutch.view.CreateGroupScreen
 import com.milad.go_dutch.view.HomeScreen
+import com.milad.go_dutch.view.TransactionsScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +30,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = "group") {
                         composable("group") { HomeScreen(navController, groupList) }
                         composable("createGroup") { CreateGroupScreen(navController) }
+                        composable("transactions") { TransactionsScreen(navController) }
                     }
                 }
             }

@@ -1,5 +1,7 @@
 package com.milad.go_dutch.view
 
+import android.os.Bundle
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -16,9 +18,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import com.milad.core.data.Group
 import com.milad.go_dutch.HomeFloatingActionButton
 import com.milad.go_dutch.MyTopAppBar
@@ -47,7 +51,10 @@ fun HomeScreen(navController: NavHostController, groupList: SnapshotStateList<Gr
                 .fillMaxWidth(),
             listState = lazyListState,
             groupList = groupList
-        )
+        ){group->
+            // TODO:  
+            /*navController.navigate("transactions")*/
+        }
     }
 }
 
@@ -55,7 +62,8 @@ fun HomeScreen(navController: NavHostController, groupList: SnapshotStateList<Gr
 private fun MainList(
     modifier: Modifier,
     listState: LazyListState,
-    groupList: SnapshotStateList<Group>
+    groupList: SnapshotStateList<Group>,
+    onClick: (Group) -> Unit
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -63,16 +71,18 @@ private fun MainList(
         state = listState,
         modifier = modifier
     ) {
-        items(groupList) {
-            ListItem(it)
+        items(groupList) { item ->
+            ListItem(item, onClick)
         }
     }
 }
 
 @Composable
-private fun ListItem(group: Group) {
+private fun ListItem(group: Group, onClick: (Group) -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick.invoke(group) },
         elevation = 4.dp
     ) {
         Row(
@@ -115,5 +125,5 @@ private fun ListItem(group: Group) {
 @Preview
 @Composable
 fun ListItemPreview() {
-    ListItem(group = groupA)
+    ListItem(group = groupA, onClick = {})
 }

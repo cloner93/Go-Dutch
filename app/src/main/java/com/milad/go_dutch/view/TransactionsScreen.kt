@@ -18,13 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.milad.core.data.*
 import com.milad.go_dutch.HomeFloatingActionButton
 import com.milad.go_dutch.MyTopAppBar
 import com.milad.go_dutch.isScrollingUp
 
 @Composable
-fun TransactionsScreen() {
+fun TransactionsScreen(navController: NavHostController) {
     val lazyListState = rememberLazyListState()
 
     Scaffold(
@@ -154,10 +155,4 @@ private fun ListItem(transaction: Transaction) {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun TransactionsScreenPreview() {
-    TransactionsScreen()
 }

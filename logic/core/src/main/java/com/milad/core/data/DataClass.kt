@@ -1,5 +1,7 @@
 package com.milad.core.data
 
+import java.io.Serializable
+
 data class Debtor(val name: String)
 enum class TransactionType {
     EQUAL, FAMILY, PERCENT, FIX
