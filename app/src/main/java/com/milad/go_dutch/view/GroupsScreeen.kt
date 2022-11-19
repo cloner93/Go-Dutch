@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.milad.core.data.Group
 import com.milad.go_dutch.HomeFloatingActionButton
 import com.milad.go_dutch.MyTopAppBar
@@ -24,7 +25,7 @@ import com.milad.go_dutch.data.groupA
 import com.milad.go_dutch.isScrollingUp
 
 @Composable
-fun HomeScreen(groupList: SnapshotStateList<Group>) {
+fun HomeScreen(navController: NavHostController, groupList: SnapshotStateList<Group>) {
     val lazyListState = rememberLazyListState()
     Scaffold(
         topBar = { MyTopAppBar("Groups") },
@@ -34,7 +35,7 @@ fun HomeScreen(groupList: SnapshotStateList<Group>) {
                 "Create Group",
                 Icons.Default.Add
             ) {
-                groupList.add(groupA)
+                navController.navigate("createGroup")
             }
         },
     ) { padding ->

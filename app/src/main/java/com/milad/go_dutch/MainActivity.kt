@@ -7,23 +7,32 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.milad.go_dutch.data.groupList
 import com.milad.go_dutch.ui.theme.GoDutchTheme
+import com.milad.go_dutch.view.CreateGroupScreen
 import com.milad.go_dutch.view.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             GoDutchTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    HomeScreen(groupList)
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "group") {
+                        composable("group") { HomeScreen(navController,groupList) }
+                        composable("createGroup") { CreateGroupScreen(/*...*/) }
+                    }
                 }
             }
         }
     }
+
 }
