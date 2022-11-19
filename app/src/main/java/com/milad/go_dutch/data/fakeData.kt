@@ -19,7 +19,7 @@ val transactionA = Transaction(
     ), TransactionType.EQUAL, payTypeAllUser
 )
 
-var groupA: Group = Group("Group A", listOf(transactionA))
+var groupA: Group = Group("Group A", allUser, listOf(transactionA))
 
 
 var groupList = mutableStateListOf<Group>()

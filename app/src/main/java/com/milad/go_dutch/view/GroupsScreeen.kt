@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -74,7 +75,11 @@ private fun ListItem(group: Group) {
         modifier = Modifier.fillMaxWidth(),
         elevation = 4.dp
     ) {
-        Row(Modifier.padding(8.dp)) {
+        Row(
+            Modifier.padding(8.dp),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Text(
                 text = group.name,
                 textAlign = TextAlign.Start,
@@ -83,6 +88,26 @@ private fun ListItem(group: Group) {
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+            Column {
+                Text(
+                    text = "${group.members.size} Member",
+                    textAlign = TextAlign.Start,
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colors.primary,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = "${group.transactions.size} Transaction",
+                    textAlign = TextAlign.Start,
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colors.primary,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }

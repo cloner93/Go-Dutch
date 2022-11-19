@@ -27,8 +27,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "group") {
-                        composable("group") { HomeScreen(navController,groupList) }
-                        composable("createGroup") { CreateGroupScreen(/*...*/) }
+                        composable("group") { HomeScreen(navController, groupList) }
+                        composable("createGroup") { CreateGroupScreen(navController) }
                     }
                 }
             }
