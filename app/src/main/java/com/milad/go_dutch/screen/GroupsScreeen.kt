@@ -1,12 +1,8 @@
-package com.milad.go_dutch.view
+package com.milad.go_dutch.screen
 
-import android.os.Bundle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -18,11 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import com.milad.core.data.Group
 import com.milad.go_dutch.HomeFloatingActionButton
 import com.milad.go_dutch.MyTopAppBar
@@ -49,21 +43,19 @@ fun HomeScreen(navController: NavHostController, groupList: SnapshotStateList<Gr
                 .padding(padding)
                 .fillMaxHeight()
                 .fillMaxWidth(),
+            navController = navController,
             listState = lazyListState,
             groupList = groupList
-        ){group->
-            // TODO:  
-            /*navController.navigate("transactions")*/
-        }
+        )
     }
 }
 
 @Composable
 private fun MainList(
     modifier: Modifier,
+    navController: NavHostController,
     listState: LazyListState,
-    groupList: SnapshotStateList<Group>,
-    onClick: (Group) -> Unit
+    groupList: SnapshotStateList<Group>
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -71,18 +63,20 @@ private fun MainList(
         state = listState,
         modifier = modifier
     ) {
-        items(groupList) { item ->
-            ListItem(item, onClick)
+        itemsIndexed(groupList) { index, item ->
+            ListItem(item) {
+                navController.navigate("transactions/${index}")
+            }
         }
     }
 }
 
 @Composable
-private fun ListItem(group: Group, onClick: (Group) -> Unit) {
+private fun ListItem(group: Group, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick.invoke(group) },
+            .clickable { onClick.invoke() },
         elevation = 4.dp
     ) {
         Row(

@@ -1,4 +1,4 @@
-package com.milad.go_dutch.view
+package com.milad.go_dutch.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn

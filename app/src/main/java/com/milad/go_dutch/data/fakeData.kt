@@ -23,3 +23,15 @@ var groupA: Group = Group("Group A", allUser, listOf(transactionA))
 
 
 var groupList = mutableStateListOf<Group>()
+var transactionList = mutableStateListOf<Transaction>()
+
+val payers = mapOf(
+    Debtor("milad") to 5_000.0,
+    Debtor("masoud") to 7_000.0,
+)
+val list: List<Transaction> = listOf(
+    Transaction("Last night dinner", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
+    Transaction("weekend fast food", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
+    Transaction("train ticket", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
+    Transaction("the cost of repairing the house", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
+)
