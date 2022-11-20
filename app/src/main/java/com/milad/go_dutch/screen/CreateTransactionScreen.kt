@@ -60,6 +60,11 @@ fun createTransactionList(
     lazyListState: LazyListState,
     modifier: Modifier
 ) {
+    var transactionName by remember { mutableStateOf(TextFieldValue("")) }
+    var transactionNameCost by remember { mutableStateOf(TextFieldValue("")) }
+    var expanded by remember { mutableStateOf(false) }
+    var selectedType: TransactionType = TransactionType.EQUAL
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 32.dp),
@@ -67,11 +72,6 @@ fun createTransactionList(
         modifier = modifier
     ) {
         item {
-            var transactionName by remember { mutableStateOf(TextFieldValue("")) }
-            var transactionNameCost by remember { mutableStateOf(TextFieldValue("")) }
-            var expanded by remember { mutableStateOf(false) }
-            var selectedType: TransactionType = TransactionType.EQUAL
-
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = transactionName,
@@ -95,7 +95,8 @@ fun createTransactionList(
                     expanded = !expanded
                 }
             ) {
-                TextField(
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
                     value = selectedType.name,
                     onValueChange = {},
                     readOnly = true,
@@ -105,7 +106,6 @@ fun createTransactionList(
                             expanded = expanded
                         )
                     },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors()
                 )
                 ExposedDropdownMenu(
                     expanded = expanded,
