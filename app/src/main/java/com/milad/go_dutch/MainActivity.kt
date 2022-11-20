@@ -26,14 +26,29 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "group") {
-                        composable("group") { HomeScreen(navController, groupList) }
-                        composable("createGroup") { CreateGroupScreen(navController) }
-                        composable("transactions/{index}") { TransactionsScreen(navController) }
-                        composable("createTransaction/{index}") { CreateTransactionScreen(navController) }
+                        composable(route = "group") { HomeScreen(navController, groupList) }
+                        composable(route = "createGroup") { CreateGroupScreen(navController) }
+                        composable(route = "transactions/{index}") { backStackEntry ->
+                            val index = backStackEntry.arguments?.getString("index")
+                            if (!index.isNullOrEmpty()) {
+                                TransactionsScreen(
+                                    navController,
+                                    index
+                                )
+                            }
+                        }
+                        composable(route = "createTransaction/{index}") { backStackEntry ->
+                            val index = backStackEntry.arguments?.getString("index")
+                            if (!index.isNullOrEmpty()) {
+                                CreateTransactionScreen(
+                                    navController,
+                                    index
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
     }
-
 }
