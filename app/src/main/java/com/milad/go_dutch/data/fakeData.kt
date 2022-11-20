@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import com.milad.core.data.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
-val allUser = listOf(
+val allUser = arrayListOf(
     Debtor("milad"),
     Debtor("mahdi"),
     Debtor("masoud"),
@@ -23,10 +23,22 @@ val payers = mapOf(
     Debtor("masoud") to 7_000.0,
 )
 val list: List<Transaction> = listOf(
-    Transaction("Last night dinner", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
+    Transaction(
+        "Last night dinner", 13000.0, payers, TransactionType.EQUAL, PayEqual(
+            arrayListOf(
+                Debtor("mahdi")
+            )
+        )
+    ),
     Transaction("weekend fast food", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
     Transaction("train ticket", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
-    Transaction("the cost of repairing the house", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
+    Transaction(
+        "the cost of repairing the house",
+        13000.0,
+        payers,
+        TransactionType.EQUAL,
+        PayEqual(allUser)
+    ),
 )
 
 

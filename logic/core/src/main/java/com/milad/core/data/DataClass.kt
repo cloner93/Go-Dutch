@@ -28,10 +28,10 @@ data class TransactionInfo(
 
 
 interface PayType {
-    val payers: List<Debtor>
+    val payers: ArrayList<Debtor>
 }
 
-class PayEqual(override val payers: List<Debtor>) : PayType
-class PayFamily(override val payers: List<Debtor>) : PayType
-class PayPercent(override val payers: List<Debtor>) : PayType
-class PayFix(override val payers: List<Debtor>) : PayType
+class PayEqual(override val payers: ArrayList<Debtor>) : PayType
+class PayFamily(override val payers: ArrayList<Debtor>) : PayType
+class PayPercent(override val payers: ArrayList<Debtor>) : PayType
+class PayFix(override val payers: ArrayList<Debtor>) : PayType

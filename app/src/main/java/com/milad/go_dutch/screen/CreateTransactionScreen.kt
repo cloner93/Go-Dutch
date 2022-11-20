@@ -7,7 +7,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,10 +22,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.milad.core.data.Debtor
 import com.milad.core.data.Group
+import com.milad.core.data.PayEqual
+import com.milad.core.data.TransactionType
 import com.milad.core.data.TransactionType.*
 import com.milad.go_dutch.MyTopAppBar
 import com.milad.go_dutch.data.groupA
 import com.milad.go_dutch.data.groupList
+import java.lang.reflect.Member
 
 @Composable
 fun CreateTransactionScreen(navController: NavHostController, index: String) {
@@ -132,7 +134,74 @@ fun createTransactionList(
                 transactionList[debtor] = cost
             }
         }
+        item {
+            addDebtor(group, selectedType)
+        }
     }
+}
+
+@Composable
+private fun addDebtor(group: Group, selectedType: TransactionType) {
+
+    Text(text = "Debtor:")
+    when (selectedType) {
+        EQUAL -> {
+            val howDebt = PayEqual(arrayListOf()) // TODO: add this to fake data
+
+            group.members.forEach { debtor ->
+                MemberItem(debtor) {
+                    if (it) {
+                        if (!howDebt.payers.contains(debtor)){
+                            howDebt.payers.add(debtor)
+                        }
+                    }else{
+                        if (howDebt.payers.contains(debtor)){
+                            howDebt.payers.remove(debtor)
+                        }
+                    }
+                }
+            }
+        }
+        FAMILY -> {
+        }
+        PERCENT -> {
+        }
+        FIX -> {
+        }
+    }
+
+}
+
+@Composable
+fun MemberItem(debtor: Debtor, onClick: (Boolean) -> Unit) {
+    val checkedState = remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = debtor.name, modifier = Modifier
+                .padding(start = 8.dp)
+                .weight(4f)
+        )
+
+        Checkbox(
+            modifier = Modifier.weight(1f),
+            checked = checkedState.value,
+            onCheckedChange = {
+                checkedState.value = it
+                onClick.invoke(it)
+            }
+        )
+    }
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun addDebtorPreview() {
+    MemberItem(debtor = Debtor("Milad Targholi")) {}
 }
 
 
@@ -186,7 +255,7 @@ private fun AddPayer(
     var memberSelected by remember { mutableStateOf(Debtor("")) }
     var memberPayedCost by remember { mutableStateOf(TextFieldValue("")) }
 
-    Column() {
+    Column {
         ExposedDropdownMenuBox(
             expanded = groupMemberExpanded,
             onExpandedChange = {

@@ -121,20 +121,20 @@ private fun ListItem(transaction: Transaction) {
                     transaction.payers.forEach() { (payer, cost) ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceAround
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(text = payer.name)
-                            Text(text = cost.toString())
+                            Text(text = "   * "+payer.name)
+                            Text(text = "$cost   ")
                         }
                     }
 
                     Text("Debtors:")
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "All Member")
-                        Text(text = transaction.transactionType.name)
+                        Text(text = "   All Member")
+                        Text(text = transaction.transactionType.name+"  ")
                     }
                     Row(
                         modifier = Modifier
