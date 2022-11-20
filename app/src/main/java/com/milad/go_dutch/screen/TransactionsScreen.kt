@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,13 +28,15 @@ import com.milad.core.data.TransactionType
 import com.milad.go_dutch.HomeFloatingActionButton
 import com.milad.go_dutch.MyTopAppBar
 import com.milad.go_dutch.data.allUser
+import com.milad.go_dutch.data.groupList
 import com.milad.go_dutch.data.payers
-import com.milad.go_dutch.data.transactionList
 import com.milad.go_dutch.isScrollingUp
 
 @Composable
-fun TransactionsScreen(navController: NavHostController) {
+fun TransactionsScreen(navController: NavHostController, index: String) {
     val lazyListState = rememberLazyListState()
+    val groupTransactionList = groupList[index.toInt()].transactions
+
     Scaffold(
         topBar = { MyTopAppBar("Create Transaction") },
         floatingActionButton = {
@@ -53,7 +54,8 @@ fun TransactionsScreen(navController: NavHostController) {
                 .fillMaxWidth(),
             navController = navController,
             lazyListState = lazyListState,
-            list = transactionList,
+            list = groupTransactionList,
+            groupIndex = index
         )
     }
 }
@@ -62,8 +64,9 @@ fun TransactionsScreen(navController: NavHostController) {
 fun TransactionList(
     modifier: Modifier,
     navController: NavHostController,
-    list: SnapshotStateList<Transaction>,
-    lazyListState: LazyListState
+    list: List<Transaction>,
+    lazyListState: LazyListState,
+    groupIndex: String
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -82,9 +85,7 @@ fun TransactionList(
                     .fillMaxWidth()
                     .padding(8.dp)
                     .clickable {
-                        val index = 0 // FIXME:
-                        navController.navigate("createTransaction/${index}")
-
+                        navController.navigate("createTransaction/${groupIndex}")
                     }
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
