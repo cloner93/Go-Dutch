@@ -8,8 +8,8 @@ enum class TransactionType {
 }
 data class Group(
     val name: String,
-    val members: List<Debtor>,
-    val transactions:List<Transaction>
+    val members: ArrayList<Debtor>,
+    val transactions:ArrayList<Transaction>
 )
 
 data class Transaction(

@@ -94,7 +94,8 @@ private fun List(
                 }
                 Button(onClick = {
                     if (groupName.text.isNotEmpty() && groupMemberList.size!= 0){
-                        val group = Group(groupName.text, groupMemberList.toList(), listOf())
+                        val group = Group(groupName.text,
+                            groupMemberList.toList() as ArrayList<Debtor>, arrayListOf())
                         groupList.add(group)
                         groupMemberList.clear()
                         navController.popBackStack()

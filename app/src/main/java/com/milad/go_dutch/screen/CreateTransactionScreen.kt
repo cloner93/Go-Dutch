@@ -20,23 +20,38 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.milad.core.data.Debtor
-import com.milad.core.data.Group
-import com.milad.core.data.PayEqual
-import com.milad.core.data.TransactionType
+import androidx.navigation.compose.rememberNavController
+import com.milad.core.data.*
 import com.milad.core.data.TransactionType.*
+import com.milad.go_dutch.HomeFloatingActionButton
 import com.milad.go_dutch.MyTopAppBar
-import com.milad.go_dutch.data.groupA
 import com.milad.go_dutch.data.groupList
-import java.lang.reflect.Member
+import com.milad.go_dutch.isScrollingUp
 
+//val transaction by remember { mutableStateOf() }
 @Composable
 fun CreateTransactionScreen(navController: NavHostController, index: String) {
     val lazyListState = rememberLazyListState()
     val group = groupList[index.toInt()]
 
-    Scaffold(topBar = { MyTopAppBar("Create Transaction") }) { padding ->
-        createTransactionList(
+    Scaffold(
+        topBar = { MyTopAppBar("Create Transaction") },
+        floatingActionButton = {
+            HomeFloatingActionButton(
+                lazyListState.isScrollingUp(),
+                "Create",
+                Icons.Default.Add
+            ) {
+                groupList[index.toInt()].transactions.add(
+                    Transaction(
+                        "N/A", 2000.0,
+                        mapOf(Debtor("Mili") to 2000.0), EQUAL, PayEqual(arrayListOf())
+                    )
+                )
+                navController.popBackStack()
+            }
+        }) { padding ->
+        CreateTransactionList(
             group = group,
             transactionList,
             lazyListState = lazyListState,
@@ -48,11 +63,17 @@ fun CreateTransactionScreen(navController: NavHostController, index: String) {
     }
 }
 
+@Preview
+@Composable
+private fun CreateTransactionPreview() {
+    CreateTransactionScreen(navController = rememberNavController(), index = "0")
+}
+
 var transactionList = mutableStateMapOf<Debtor, Double>()
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun createTransactionList(
+private fun CreateTransactionList(
     group: Group,
     list: SnapshotStateMap<Debtor, Double>,
     lazyListState: LazyListState,
@@ -89,12 +110,9 @@ fun createTransactionList(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
 
-            ExposedDropdownMenuBox(
-                expanded = transactionTypeMenuExpanded,
-                onExpandedChange = {
-                    transactionTypeMenuExpanded = !transactionTypeMenuExpanded
-                }
-            ) {
+            ExposedDropdownMenuBox(expanded = transactionTypeMenuExpanded, onExpandedChange = {
+                transactionTypeMenuExpanded = !transactionTypeMenuExpanded
+            }) {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = selectedType.name,
@@ -107,10 +125,8 @@ fun createTransactionList(
                         )
                     },
                 )
-                ExposedDropdownMenu(
-                    expanded = transactionTypeMenuExpanded,
-                    onDismissRequest = { transactionTypeMenuExpanded = false }
-                ) {
+                ExposedDropdownMenu(expanded = transactionTypeMenuExpanded,
+                    onDismissRequest = { transactionTypeMenuExpanded = false }) {
                     values().forEach { transactionType ->
                         DropdownMenuItem(onClick = {
                             selectedType = transactionType
@@ -126,7 +142,7 @@ fun createTransactionList(
         }
 
         items(list.toList()) { (debtor, double) ->
-            listItem(debtor, double)
+            ListItem(debtor, double)
         }
 
         item {
@@ -135,50 +151,17 @@ fun createTransactionList(
             }
         }
         item {
-            addDebtor(group, selectedType)
+            AddDebtor(group, selectedType)
         }
     }
 }
 
 @Composable
-private fun addDebtor(group: Group, selectedType: TransactionType) {
-
-    Text(text = "Debtor:")
-    when (selectedType) {
-        EQUAL -> {
-            val howDebt = PayEqual(arrayListOf()) // TODO: add this to fake data
-
-            group.members.forEach { debtor ->
-                MemberItem(debtor) {
-                    if (it) {
-                        if (!howDebt.payers.contains(debtor)){
-                            howDebt.payers.add(debtor)
-                        }
-                    }else{
-                        if (howDebt.payers.contains(debtor)){
-                            howDebt.payers.remove(debtor)
-                        }
-                    }
-                }
-            }
-        }
-        FAMILY -> {
-        }
-        PERCENT -> {
-        }
-        FIX -> {
-        }
-    }
-
-}
-
-@Composable
-fun MemberItem(debtor: Debtor, onClick: (Boolean) -> Unit) {
+private fun MemberItem(debtor: Debtor, onClick: (Boolean) -> Unit) {
     val checkedState = remember { mutableStateOf(false) }
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = debtor.name, modifier = Modifier
@@ -186,30 +169,18 @@ fun MemberItem(debtor: Debtor, onClick: (Boolean) -> Unit) {
                 .weight(4f)
         )
 
-        Checkbox(
-            modifier = Modifier.weight(1f),
-            checked = checkedState.value,
-            onCheckedChange = {
-                checkedState.value = it
-                onClick.invoke(it)
-            }
-        )
+        Checkbox(modifier = Modifier.weight(1f), checked = checkedState.value, onCheckedChange = {
+            checkedState.value = it
+            onClick.invoke(it)
+        })
     }
 
 }
 
-@Preview(showBackground = true)
 @Composable
-fun addDebtorPreview() {
-    MemberItem(debtor = Debtor("Milad Targholi")) {}
-}
-
-
-@Composable
-fun listItem(debtor: Debtor, double: Double) {
+private fun ListItem(debtor: Debtor, double: Double) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = 4.dp
+        modifier = Modifier.fillMaxWidth(), elevation = 4.dp
     ) {
         Row(
             modifier = Modifier
@@ -238,30 +209,18 @@ fun listItem(debtor: Debtor, double: Double) {
     }
 }
 
-@Preview
-@Composable
-fun itemPrev() {
-    listItem(Debtor("Milad Targholi"), 200000.0)
-}
-
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
-private fun AddPayer(
-    group: Group,
-    onClick: (Debtor, Double) -> Unit
-) {
+private fun AddPayer(group: Group, onClick: (Debtor, Double) -> Unit) {
     var groupMemberExpanded by remember { mutableStateOf(false) }
 
     var memberSelected by remember { mutableStateOf(Debtor("")) }
     var memberPayedCost by remember { mutableStateOf(TextFieldValue("")) }
 
     Column {
-        ExposedDropdownMenuBox(
-            expanded = groupMemberExpanded,
-            onExpandedChange = {
-                groupMemberExpanded = !groupMemberExpanded
-            }
-        ) {
+        ExposedDropdownMenuBox(expanded = groupMemberExpanded, onExpandedChange = {
+            groupMemberExpanded = !groupMemberExpanded
+        }) {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = memberSelected.name,
@@ -275,10 +234,8 @@ private fun AddPayer(
                     )
                 },
             )
-            ExposedDropdownMenu(
-                expanded = groupMemberExpanded,
-                onDismissRequest = { groupMemberExpanded = false }
-            ) {
+            ExposedDropdownMenu(expanded = groupMemberExpanded,
+                onDismissRequest = { groupMemberExpanded = false }) {
                 group.members.forEach { member ->
                     DropdownMenuItem(onClick = {
                         memberSelected = member
@@ -313,11 +270,33 @@ private fun AddPayer(
     }
 }
 
-
-@Preview(showBackground = true)
 @Composable
-fun addMemberPreview() {
-    AddPayer(group = groupA) { _, _ ->
-//        transactionList[debtor] = cost
+private fun AddDebtor(group: Group, selectedType: TransactionType) {
+    Text(text = "Debtor:")
+    when (selectedType) {
+        EQUAL -> {
+            val howDebt = PayEqual(arrayListOf())
+
+            group.members.forEach { debtor ->
+                MemberItem(debtor) {
+                    if (it) {
+                        if (!howDebt.payers.contains(debtor)) {
+                            howDebt.payers.add(debtor)
+                        }
+                    } else {
+                        if (howDebt.payers.contains(debtor)) {
+                            howDebt.payers.remove(debtor)
+                        }
+                    }
+                }
+            }
+        }
+        FAMILY -> {
+        }
+        PERCENT -> {
+        }
+        FIX -> {
+        }
     }
+
 }

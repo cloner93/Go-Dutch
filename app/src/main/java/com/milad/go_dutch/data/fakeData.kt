@@ -22,7 +22,7 @@ val payers = mapOf(
     Debtor("milad") to 5_000.0,
     Debtor("masoud") to 7_000.0,
 )
-val list: List<Transaction> = listOf(
+val list: ArrayList<Transaction> = arrayListOf(
     Transaction(
         "Last night dinner", 13000.0, payers, TransactionType.EQUAL, PayEqual(
             arrayListOf(
