@@ -24,17 +24,17 @@ val payers = mapOf(
 )
 val list: ArrayList<Transaction> = arrayListOf(
     Transaction(
-        "Last night dinner", 13000.0, payers, TransactionType.EQUAL, PayEqual(
+        "Last night dinner", 12000.0, payers, TransactionType.EQUAL, PayEqual(
             arrayListOf(
                 Debtor("mahdi")
             )
         )
     ),
-    Transaction("weekend fast food", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
-    Transaction("train ticket", 13000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
+    Transaction("weekend fast food", 12000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
+    Transaction("train ticket", 12000.0, payers, TransactionType.EQUAL, PayEqual(allUser)),
     Transaction(
         "the cost of repairing the house",
-        13000.0,
+        12000.0,
         payers,
         TransactionType.EQUAL,
         PayEqual(allUser)

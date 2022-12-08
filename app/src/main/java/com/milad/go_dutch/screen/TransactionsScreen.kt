@@ -1,5 +1,6 @@
 package com.milad.go_dutch.screen
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.milad.core.GoDutch
 import com.milad.core.data.PayEqual
 import com.milad.core.data.Transaction
 import com.milad.core.data.TransactionType
@@ -44,7 +46,11 @@ fun TransactionsScreen(navController: NavHostController, index: String) {
                 lazyListState.isScrollingUp(),
                 "Calculate",
                 Icons.Default.Done
-            ) {}
+            ) {
+                val goDutch = GoDutch(groupTransactionList)
+                val calc= goDutch.calculateEachMember()
+                Log.d("TAG", calc.toString())
+            }
         }
     ) { padding ->
         TransactionList(
