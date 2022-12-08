@@ -2,12 +2,13 @@ package com.milad.go_dutch.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,43 +24,28 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.milad.core.data.*
 import com.milad.core.data.TransactionType.*
-import com.milad.go_dutch.HomeFloatingActionButton
 import com.milad.go_dutch.MyTopAppBar
 import com.milad.go_dutch.data.groupList
-import com.milad.go_dutch.isScrollingUp
 
-//val transaction by remember { mutableStateOf() }
 @Composable
 fun CreateTransactionScreen(navController: NavHostController, index: String) {
-    val lazyListState = rememberLazyListState()
     val group = groupList[index.toInt()]
 
-    Scaffold(
-        topBar = { MyTopAppBar("Create Transaction") },
-        floatingActionButton = {
-            HomeFloatingActionButton(
-                lazyListState.isScrollingUp(),
-                "Create",
-                Icons.Default.Add
-            ) {
-                groupList[index.toInt()].transactions.add(
-                    Transaction(
-                        "N/A", 2000.0,
-                        mapOf(Debtor("Mili") to 2000.0), EQUAL, PayEqual(arrayListOf())
-                    )
-                )
-                navController.popBackStack()
-            }
-        }) { padding ->
+    Scaffold(topBar = { MyTopAppBar("Create Transaction") }) { padding ->
         CreateTransactionList(
             group = group,
-            transactionList,
-            lazyListState = lazyListState,
             modifier = Modifier
                 .padding(padding)
                 .fillMaxHeight()
-                .fillMaxWidth(),
-        )
+                .fillMaxWidth()
+                .verticalScroll(state = rememberScrollState())
+        ) { transaction: Transaction ->
+
+            groupList[index.toInt()].transactions.add(
+                transaction
+            )
+            navController.popBackStack()
+        }
     }
 }
 
@@ -69,91 +55,133 @@ private fun CreateTransactionPreview() {
     CreateTransactionScreen(navController = rememberNavController(), index = "0")
 }
 
-var transactionList = mutableStateMapOf<Debtor, Double>()
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun CreateTransactionList(
     group: Group,
-    list: SnapshotStateMap<Debtor, Double>,
-    lazyListState: LazyListState,
-    modifier: Modifier
+    modifier: Modifier,
+    onClick: (Transaction) -> Boolean
 ) {
-    var transactionName by remember { mutableStateOf(TextFieldValue("")) }
-    var transactionNameCost by remember { mutableStateOf(TextFieldValue("")) }
+    val list = remember { mutableStateMapOf<Debtor, Double>() }
+
+    val transactionName = remember { TextFieldState("") }
+    val transactionNameCost = remember { TextFieldState("") }
 
     var transactionTypeMenuExpanded by remember { mutableStateOf(false) }
     var selectedType by remember { mutableStateOf(EQUAL) }
 
+    var debtors: PayType? = null
 
-    LazyColumn(
+    Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 32.dp),
-        state = lazyListState,
-        modifier = modifier
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 32.dp)
     ) {
-        item {
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = transactionName,
-                onValueChange = { value -> transactionName = value },
-                label = { Text(text = "Transaction") },
-                placeholder = { Text(text = "Enter Transaction name") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-            )
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = transactionNameCost,
-                onValueChange = { value -> transactionNameCost = value },
-                label = { Text(text = "Cost") },
-                placeholder = { Text(text = "Enter Transaction cost") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-            )
+        GoTextField(
+            labelText = "Transaction",
+            placeholderText = "Enter Transaction name",
+            keyboardType = KeyboardType.Text,
+            value = transactionName
+        )
 
-            ExposedDropdownMenuBox(expanded = transactionTypeMenuExpanded, onExpandedChange = {
-                transactionTypeMenuExpanded = !transactionTypeMenuExpanded
-            }) {
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = selectedType.name,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text(text = "Transaction Type") },
-                    trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(
-                            expanded = transactionTypeMenuExpanded
-                        )
-                    },
-                )
-                ExposedDropdownMenu(expanded = transactionTypeMenuExpanded,
-                    onDismissRequest = { transactionTypeMenuExpanded = false }) {
-                    values().forEach { transactionType ->
-                        DropdownMenuItem(onClick = {
-                            selectedType = transactionType
-                            transactionTypeMenuExpanded = false
-                        }) {
-                            Text(text = transactionType.name)
-                        }
+        GoTextField(
+            labelText = "Cost",
+            placeholderText = "Enter Transaction cost",
+            keyboardType = KeyboardType.Decimal,
+            value = transactionNameCost
+        )
+
+        Text(text = "Payers:")
+        for (item in list) {
+            ListItem(item.key, item.value)
+        }
+
+        AddPayer(group) { debtor, cost ->
+            list[debtor] = cost
+        }
+
+        ExposedDropdownMenuBox(expanded = transactionTypeMenuExpanded, onExpandedChange = {
+            transactionTypeMenuExpanded = !transactionTypeMenuExpanded
+        }) {
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = selectedType.name,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text(text = "Transaction Type") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = transactionTypeMenuExpanded
+                    )
+                },
+            )
+            ExposedDropdownMenu(expanded = transactionTypeMenuExpanded,
+                onDismissRequest = { transactionTypeMenuExpanded = false }) {
+                values().forEach { transactionType ->
+                    DropdownMenuItem(onClick = {
+                        selectedType = transactionType
+                        transactionTypeMenuExpanded = false
+                    }) {
+                        Text(text = transactionType.name)
                     }
                 }
             }
-
-            Text(text = "Payers:")
         }
 
-        items(list.toList()) { (debtor, double) ->
-            ListItem(debtor, double)
+        Text(text = "Debtor:")
+
+        AddDebtor(group, selectedType) { payType: PayType ->
+            debtors = payType
         }
 
-        item {
-            AddPayer(group) { debtor, cost ->
-                transactionList[debtor] = cost
-            }
-        }
-        item {
-            AddDebtor(group, selectedType)
+        OutlinedButton(onClick = {
+            val transaction = Transaction(
+                transactionName.text,
+                transactionNameCost.text.toDouble(),
+                list,
+                selectedType,
+                debtors!!
+            )
+            onClick.invoke(transaction)
+        }, modifier = Modifier.fillMaxWidth()) {
+            Text("Create Transaction")
         }
     }
+}
+
+@Composable
+private fun GoTextField(
+    modifier: Modifier = Modifier,
+    labelText: String = "",
+    placeholderText: String = "",
+    keyboardType: KeyboardType = KeyboardType.Text,
+    readOnly: Boolean = false,
+    value: TextFieldState = remember { TextFieldState("") },
+    trailingIcon: @Composable (() -> Unit)? = null
+) {
+    OutlinedTextField(
+        modifier = modifier.fillMaxWidth(),
+        value = value.text,
+        onValueChange = { value.text = it },
+        label = { Text(text = labelText) },
+        placeholder = { Text(text = placeholderText) },
+        readOnly = readOnly,
+        trailingIcon = trailingIcon,
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GoTextFieldPreview() {
+    GoTextField(
+        labelText = "label",
+        placeholderText = "place holder",
+        keyboardType = KeyboardType.Text,
+    )
+}
+
+class TextFieldState(value: String = "") {
+    var text: String by mutableStateOf(value)
 }
 
 @Composable
@@ -271,24 +299,26 @@ private fun AddPayer(group: Group, onClick: (Debtor, Double) -> Unit) {
 }
 
 @Composable
-private fun AddDebtor(group: Group, selectedType: TransactionType) {
-    Text(text = "Debtor:")
-    when (selectedType) {
+private fun AddDebtor(group: Group, type: TransactionType, onClick: (PayType) -> Unit) {
+    when (type) {
         EQUAL -> {
-            val howDebt = PayEqual(arrayListOf())
+            val whoDebt = PayEqual(arrayListOf())
 
             group.members.forEach { debtor ->
                 MemberItem(debtor) {
                     if (it) {
-                        if (!howDebt.payers.contains(debtor)) {
-                            howDebt.payers.add(debtor)
+                        if (!whoDebt.payers.contains(debtor)) {
+                            whoDebt.payers.add(debtor)
                         }
                     } else {
-                        if (howDebt.payers.contains(debtor)) {
-                            howDebt.payers.remove(debtor)
+                        if (whoDebt.payers.contains(debtor)) {
+                            whoDebt.payers.remove(debtor)
                         }
                     }
                 }
+            }
+            Button(onClick = { onClick.invoke(whoDebt) }) {
+                Text(text = "Add")
             }
         }
         FAMILY -> {
@@ -298,5 +328,4 @@ private fun AddDebtor(group: Group, selectedType: TransactionType) {
         FIX -> {
         }
     }
-
 }
