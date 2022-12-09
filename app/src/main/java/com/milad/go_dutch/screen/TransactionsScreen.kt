@@ -30,6 +30,7 @@ import com.milad.core.data.TransactionType
 import com.milad.go_dutch.HomeFloatingActionButton
 import com.milad.go_dutch.MyTopAppBar
 import com.milad.go_dutch.data.allUser
+import com.milad.go_dutch.data.calculationsResult
 import com.milad.go_dutch.data.groupList
 import com.milad.go_dutch.data.payers
 import com.milad.go_dutch.isScrollingUp
@@ -48,8 +49,10 @@ fun TransactionsScreen(navController: NavHostController, index: String) {
                 Icons.Default.Done
             ) {
                 val goDutch = GoDutch(groupTransactionList)
-                val calc= goDutch.calculateEachMember()
-                Log.d("TAG", calc.toString())
+                val calc = goDutch.calculateEachMember()
+                calculationsResult = calc // FIXME
+
+                navController.navigate("calculated/${index}")
             }
         }
     ) { padding ->
@@ -129,7 +132,7 @@ private fun ListItem(transaction: Transaction) {
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(text = "   * "+payer.name)
+                            Text(text = "   * " + payer.name)
                             Text(text = "$cost   ")
                         }
                     }
@@ -140,7 +143,7 @@ private fun ListItem(transaction: Transaction) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(text = "   All Member")
-                        Text(text = transaction.transactionType.name+"  ")
+                        Text(text = transaction.transactionType.name + "  ")
                     }
                     Row(
                         modifier = Modifier

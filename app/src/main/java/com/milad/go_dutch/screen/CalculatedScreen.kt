@@ -15,45 +15,52 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.milad.core.GoDutch
 import com.milad.core.data.TransactionInfo
 import com.milad.go_dutch.MyTopAppBar
+import com.milad.go_dutch.data.calculationsResult
+import com.milad.go_dutch.data.list
+import com.milad.go_dutch.data.payers
 
 @Composable
-fun CalculatedScreen() {
+fun CalculatedScreen(navController: NavHostController, index: String) {
     val lazyListState = rememberLazyListState()
 
     Scaffold(
-        topBar = { MyTopAppBar("Calculated Transactions") },
-        content = calculatedScreenContent(lazyListState)
-    )
+        topBar = { MyTopAppBar("Calculated Transactions") }) { paddingValues ->
+        CalculatedList(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxHeight()
+                .fillMaxWidth(),
+            listState = lazyListState,
+            list = calculationsResult,
+        )
+
+    }
+}
+
+@Composable
+fun CalculatedList(modifier: Modifier, listState: LazyListState, list: List<TransactionInfo>) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 32.dp),
+        state = listState,
+        modifier = modifier
+    ) {
+        items(list) {
+            ListItem(it)
+        }
+    }
 }
 
 @Preview
 @Composable
-fun CalculatedScreenPreview() {
-    CalculatedScreen()
+fun PreviewListItem() {
+    val data = GoDutch(list).calculateEachMember()
+    ListItem(transactionInfo = data.first())
 }
-
-@Composable
-fun calculatedScreenContent(
-    lazyListState: LazyListState
-): @Composable (PaddingValues) -> Unit =
-    {
-        val itemList = listOf<TransactionInfo>()
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 32.dp),
-            state = lazyListState,
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-        ) {
-            items(itemList) {
-                ListItem(it)
-            }
-        }
-    }
-
 
 @Composable
 private fun ListItem(transactionInfo: TransactionInfo) {
@@ -69,25 +76,34 @@ private fun ListItem(transactionInfo: TransactionInfo) {
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Milad targholi")
-                Column {
-                    Text(text = "+ 123.000", color = Color.Green)
-                    Text(text = "- 1.000", color = Color.Red)
-                }
+                Text(text = transactionInfo.transaction.name)
+                Text(text = transactionInfo.transaction.cost.toString(), color = Color.Black)
             }
             AnimatedVisibility(expended) {
                 Column() {
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Transactions:")
-                    repeat(3) {
+                    Text("Creditors:")
+                    for (item in transactionInfo.payersInTransaction) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceAround
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(text = "payer.name")
-                            Text(text = "cost.toString()")
+                            Text(text = "   * " + item.key.name)
+                            Text(text = item.value.toString()+"   " , color = Color.Green)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Debtors:")
+                    for (item in transactionInfo.usersCostInTransaction) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = "   * "+item.key.name)
+                            Text(text = item.value.toString()+"   " , color = Color.Red)
                         }
                     }
                 }

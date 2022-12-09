@@ -46,6 +46,12 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
+                        composable(route = "calculated/{index}") { backStackEntry ->
+                            val index = backStackEntry.arguments?.getString("index")
+                            if (!index.isNullOrEmpty()) {
+                                CalculatedScreen(navController, index)
+                            }
+                        }
                     }
                 }
             }
