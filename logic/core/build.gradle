@@ -33,4 +33,5 @@ dependencies {
     testImplementation project(path: ':app')
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    testImplementation 'org.mockito:mockito-core:4.6.1'
 }
