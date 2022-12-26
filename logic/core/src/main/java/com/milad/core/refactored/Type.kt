@@ -3,14 +3,13 @@ package com.milad.core.refactored
 import com.milad.core.data.*
 
 interface Type {
-    fun calculate(): TransactionInfo2
+    fun calculate(): Type
 }
 
-class TypeEqual(private val transaction: Transaction2) : Type {
-    override fun calculate(): TransactionInfo2 {
-        val debtorList = mutableMapOf<Debtor, Float>()
-        val payerList = mutableMapOf<Debtor, Float>()
-        payerList.putAll(transaction.payers)
+class TypeEqual(val transaction: Transaction2) : Type {
+    val debtorList = mutableMapOf<Debtor, Float>()
+
+    override fun calculate(): TypeEqual {
 
         val dividedCost = transaction.transactionCost / transaction.debtors.size
 
@@ -23,18 +22,15 @@ class TypeEqual(private val transaction: Transaction2) : Type {
         }
 
         // (who pay in transaction - dividedCost)
-        payerList.forEach {
+        transaction.payers.forEach {
             if (debtorList.containsKey(it.key)) {
                 debtorList[it.key] = debtorList.getValue(it.key) - it.value
             } else {
                 debtorList[it.key] = -it.value
             }
         }
-        return TransactionInfo2(
-            transaction,
-            payerList,
-            debtorList
-        )
+
+        return this
     }
 }
 
@@ -42,7 +38,7 @@ class TypeEqual(private val transaction: Transaction2) : Type {
 
 
 data class Transaction2(
-    val name:String,
+    val name: String,
     val transactionCost: Float,
     var payers: Map<Debtor, Float> = mapOf(),
     var debtors: List<Debtor> = listOf()
@@ -50,6 +46,5 @@ data class Transaction2(
 
 data class TransactionInfo2(
     val transaction: Transaction2,
-    val payersInTransaction: MutableMap<Debtor, Float> = mutableMapOf(),
     val usersCostInTransaction: MutableMap<Debtor, Float> = mutableMapOf()
 )
