@@ -26,7 +26,7 @@ class TransactionImplTest {
 
     @Test
     fun `first test for implementation`() {
-        Mockito.`when`(type.calculate()).thenReturn(result)
+//        Mockito.`when`(type.calculate()).thenReturn(result)
 
 //        assertEquals(transaction.add())
     }

@@ -12,7 +12,7 @@ class GoDutchTest {
 
     @Test
     fun test_case_1() {
-        val allUser = listOf(
+        val allUser = arrayListOf(
             Debtor("milad"),
             Debtor("mahdi"),
             Debtor("masoud"),
@@ -43,7 +43,7 @@ class GoDutchTest {
             ), TransactionType.EQUAL, payTypeAllUser
         )
 
-        goDutch = GoDutch(listOf(hamom, gheluon))
+        goDutch = GoDutch(arrayListOf(hamom, gheluon))
         val list = goDutch.calculateEachMember()
 
         assertNotNull(list)
@@ -59,7 +59,7 @@ class GoDutchTest {
 
     @Test
     fun test_case_2() {
-        val allUser = listOf(
+        val allUser = arrayListOf(
             Debtor("milad"),
             Debtor("mohammad"),
             Debtor("ehsan")
@@ -74,7 +74,7 @@ class GoDutchTest {
             payTypeAllUser
         )
 
-        goDutch = GoDutch(listOf(kabab))
+        goDutch = GoDutch(arrayListOf(kabab))
         val list = goDutch.calculateEachMember()
 
         assertNotNull(list)
@@ -88,7 +88,7 @@ class GoDutchTest {
 
     @Test
     fun test_case_3() {
-        val allUser = listOf(
+        val allUser = arrayListOf(
             Debtor("ehsan"),
             Debtor("samanhe"),
             Debtor("fatemhe"),
@@ -123,7 +123,7 @@ class GoDutchTest {
             payTypeAllUser
         )
 
-        goDutch = GoDutch(listOf(SibZamini, Masala, Sham))
+        goDutch = GoDutch(arrayListOf(SibZamini, Masala, Sham))
         val list = goDutch.calculateEachMember()
 
         assertNotNull(list)
