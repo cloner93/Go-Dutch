@@ -16,7 +16,7 @@ class TransactionImplTest {
 
     private lateinit var transaction: Transaction
 
-    private val result = TransactionInfo2(Transaction2("", 0F))
+//    private val result = TransactionInfo2(Transaction2("", 0F))
 
     @Before
     fun before() {

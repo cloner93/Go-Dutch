@@ -42,7 +42,7 @@ class TypePercentTest {
 
 
     @Test
-    fun `check `() {
+    fun `check debtorList value`() {
 
         type = TypePercent(testTransaction1, mapPercent)
         val result = type.calculate()
