@@ -1,7 +1,7 @@
 package com.milad.core.data
 
 
-fun MutableMap<Debtor, Double>.sort(): MutableMap<Debtor, Double> {
+fun MutableMap<Debtor, Float>.sort(): MutableMap<Debtor, Float> {
     return entries
         .sortedBy { it.value }
         .reversed()
@@ -9,7 +9,7 @@ fun MutableMap<Debtor, Double>.sort(): MutableMap<Debtor, Double> {
         .toMutableMap()
 
 }
-fun MutableMap<Debtor, Double>.reverseSort(): MutableMap<Debtor, Double> {
+fun MutableMap<Debtor, Float>.reverseSort(): MutableMap<Debtor, Float> {
     return entries
         .sortedBy { it.value }
         .associate { it.toPair() }
@@ -17,8 +17,8 @@ fun MutableMap<Debtor, Double>.reverseSort(): MutableMap<Debtor, Double> {
 
 }
 
-fun MutableMap<Debtor, Double>.collocationPlusForEach(
-    totalUserCost: MutableMap<Debtor, Double>
+fun MutableMap<Debtor, Float>.collocationPlusForEach(
+    totalUserCost: MutableMap<Debtor, Float>
 ) = forEach {
     if (totalUserCost.containsKey(it.key)) {
         totalUserCost[it.key] = totalUserCost.getValue(it.key) + it.value

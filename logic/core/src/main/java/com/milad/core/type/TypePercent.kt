@@ -1,8 +1,11 @@
-package com.milad.core.refactored
+package com.milad.core.type
 
 import com.milad.core.data.Debtor
 
-class TypePercent(val transaction: Transaction2, private val percentMap: Map<Debtor, Int>) : Type {
+class TypePercent(
+    override val transaction: Transaction2,
+    private val percentMap: Map<Debtor, Int>
+) : Type(transaction) {
     var debtorList: MutableMap<Debtor, Float> = mutableMapOf()
 
     override fun calculate(): TypePercent {

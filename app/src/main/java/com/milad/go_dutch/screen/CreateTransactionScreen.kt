@@ -24,6 +24,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.milad.core.data.*
 import com.milad.core.data.TransactionType.*
+import com.milad.core.type.Transaction2
+import com.milad.core.type.Type
+import com.milad.core.type.TypeEqual
+import com.milad.core.type.TypePercent
 import com.milad.go_dutch.MyTopAppBar
 import com.milad.go_dutch.data.groupList
 
@@ -39,7 +43,7 @@ fun CreateTransactionScreen(navController: NavHostController, index: String) {
                 .fillMaxHeight()
                 .fillMaxWidth()
                 .verticalScroll(state = rememberScrollState())
-        ) { transaction: Transaction ->
+        ) { transaction: Type ->
 
             groupList[index.toInt()].transactions.add(
                 transaction
@@ -60,9 +64,9 @@ private fun CreateTransactionPreview() {
 private fun CreateTransactionList(
     group: Group,
     modifier: Modifier,
-    onClick: (Transaction) -> Boolean
+    onClick: (Type) -> Boolean
 ) {
-    val list = remember { mutableStateMapOf<Debtor, Double>() }
+    val list = remember { mutableStateMapOf<Debtor, Float>() }
 
     val transactionName = remember { TextFieldState("") }
     val transactionNameCost = remember { TextFieldState("") }
@@ -136,12 +140,37 @@ private fun CreateTransactionList(
         OutlinedButton(onClick = {
             val transaction = Transaction(
                 transactionName.text,
-                transactionNameCost.text.toDouble(),
+                transactionNameCost.text.toFloat(),
                 list,
                 selectedType,
                 debtors!!
             )
-            onClick.invoke(transaction)
+            val transaction2: Type = when (selectedType) {
+                EQUAL -> {
+                    TypeEqual(
+                        Transaction2(
+                        transactionName.text,
+                        transactionNameCost.text.toFloat(),
+                        list,
+                        // FIXME:
+                    )
+                    )
+                }
+                PERCENT -> {
+                    TypePercent(
+                        Transaction2(
+                        transactionName.text,
+                        transactionNameCost.text.toFloat(),
+                        list,
+                        // FIXME:
+                    ), mapOf() // FIXME: add ui
+                    )
+                }
+                else -> {
+                    throw Exception("")
+                }
+            }
+            onClick.invoke(transaction2)
         }, modifier = Modifier.fillMaxWidth()) {
             Text("Create Transaction")
         }
@@ -206,7 +235,7 @@ private fun MemberItem(debtor: Debtor, onClick: (Boolean) -> Unit) {
 }
 
 @Composable
-private fun ListItem(debtor: Debtor, double: Double) {
+private fun ListItem(debtor: Debtor, Float: Float) {
     Card(
         modifier = Modifier.fillMaxWidth(), elevation = 4.dp
     ) {
@@ -225,7 +254,7 @@ private fun ListItem(debtor: Debtor, double: Double) {
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "+ $double",
+                text = "+ $Float",
                 textAlign = TextAlign.Start,
                 fontSize = 16.sp,
                 color = Color.Gray,
@@ -239,7 +268,7 @@ private fun ListItem(debtor: Debtor, double: Double) {
 
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
-private fun AddPayer(group: Group, onClick: (Debtor, Double) -> Unit) {
+private fun AddPayer(group: Group, onClick: (Debtor, Float) -> Unit) {
     var groupMemberExpanded by remember { mutableStateOf(false) }
 
     var memberSelected by remember { mutableStateOf(Debtor("")) }
@@ -289,7 +318,7 @@ private fun AddPayer(group: Group, onClick: (Debtor, Double) -> Unit) {
             )
             IconButton(modifier = Modifier.weight(1f), onClick = {
                 if (memberSelected.name.isNotEmpty() && memberPayedCost.text.isNotEmpty()) {
-                    onClick.invoke(memberSelected, memberPayedCost.text.toDouble())
+                    onClick.invoke(memberSelected, memberPayedCost.text.toFloat())
                 }
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)

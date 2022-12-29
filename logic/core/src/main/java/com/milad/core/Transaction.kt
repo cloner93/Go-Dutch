@@ -1,6 +1,7 @@
-package com.milad.core.refactored
+package com.milad.core
 
 import android.util.Log
+import com.milad.core.type.Type
 
 interface Transaction {
     val type: Type

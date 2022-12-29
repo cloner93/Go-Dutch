@@ -1,8 +1,8 @@
-package com.milad.core.refactored
+package com.milad.core.type
 
 import com.milad.core.data.Debtor
 
-class TypeEqual(val transaction: Transaction2) : Type {
+class TypeEqual(override val transaction: Transaction2) : Type(transaction) {
     val debtorList = mutableMapOf<Debtor, Float>()
 
     override fun calculate(): TypeEqual {

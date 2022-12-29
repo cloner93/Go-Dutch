@@ -12,16 +12,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.milad.core.GoDutch
-import com.milad.core.data.TransactionInfo
+import com.milad.core.type.Type
 import com.milad.go_dutch.MyTopAppBar
 import com.milad.go_dutch.data.calculationsResult
-import com.milad.go_dutch.data.list
-import com.milad.go_dutch.data.payers
 
 @Composable
 fun CalculatedScreen(navController: NavHostController, index: String) {
@@ -42,7 +37,7 @@ fun CalculatedScreen(navController: NavHostController, index: String) {
 }
 
 @Composable
-fun CalculatedList(modifier: Modifier, listState: LazyListState, list: List<TransactionInfo>) {
+fun CalculatedList(modifier: Modifier, listState: LazyListState, list: List<Type>) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 32.dp),
@@ -55,15 +50,8 @@ fun CalculatedList(modifier: Modifier, listState: LazyListState, list: List<Tran
     }
 }
 
-@Preview
 @Composable
-fun PreviewListItem() {
-    val data = GoDutch(list).calculateEachMember()
-    ListItem(transactionInfo = data.first())
-}
-
-@Composable
-private fun ListItem(transactionInfo: TransactionInfo) {
+private fun ListItem(type: Type) {
     var expended by remember { mutableStateOf(true) }
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -78,34 +66,34 @@ private fun ListItem(transactionInfo: TransactionInfo) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = transactionInfo.transaction.name)
-                Text(text = transactionInfo.transaction.cost.toString(), color = Color.Black)
+//                Text(text = type.transaction.name)
+//                Text(text = type.transaction.cost.toString(), color = Color.Black)
             }
             AnimatedVisibility(expended) {
                 Column() {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("Creditors:")
-                    for (item in transactionInfo.payersInTransaction) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "   * " + item.key.name)
-                            Text(text = item.value.toString()+"   " , color = Color.Green)
-                        }
-                    }
+//                    for (item in type.payersInTransaction) {
+//                        Row(
+//                            modifier = Modifier.fillMaxWidth(),
+//                            horizontalArrangement = Arrangement.SpaceBetween
+//                        ) {
+//                            Text(text = "   * " + item.key.name)
+//                            Text(text = item.value.toString()+"   " , color = Color.Green)
+//                        }
+//                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("Debtors:")
-                    for (item in transactionInfo.usersCostInTransaction) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "   * "+item.key.name)
-                            Text(text = item.value.toString()+"   " , color = Color.Red)
-                        }
-                    }
+//                    for (item in type.usersCostInTransaction) {
+//                        Row(
+//                            modifier = Modifier.fillMaxWidth(),
+//                            horizontalArrangement = Arrangement.SpaceBetween
+//                        ) {
+//                            Text(text = "   * "+item.key.name)
+//                            Text(text = item.value.toString()+"   " , color = Color.Red)
+//                        }
+//                    }
                 }
             }
         }

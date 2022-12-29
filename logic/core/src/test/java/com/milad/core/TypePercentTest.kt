@@ -1,6 +1,8 @@
-package com.milad.core.refactored
+package com.milad.core
 
 import com.milad.core.data.Debtor
+import com.milad.core.type.Transaction2
+import com.milad.core.type.TypePercent
 import org.junit.Assert.*
 import org.junit.Test
 

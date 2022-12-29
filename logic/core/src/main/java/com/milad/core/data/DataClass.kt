@@ -1,6 +1,6 @@
 package com.milad.core.data
 
-import java.io.Serializable
+import com.milad.core.type.Type
 
 data class Debtor(val name: String)
 enum class TransactionType {
@@ -9,21 +9,21 @@ enum class TransactionType {
 data class Group(
     val name: String,
     val members: ArrayList<Debtor>,
-    val transactions:ArrayList<Transaction>
+    val transactions:ArrayList<Type>
 )
 
 data class Transaction(
     val name: String,
-    val cost: Double,
-    val payers: Map<Debtor, Double>,
+    val cost: Float,
+    val payers: Map<Debtor, Float>,
     val transactionType: TransactionType,
     val payType: PayType
 )
 
 data class TransactionInfo(
     val transaction: Transaction,
-    val payersInTransaction: MutableMap<Debtor, Double>,
-    val usersCostInTransaction: MutableMap<Debtor, Double>
+    val payersInTransaction: MutableMap<Debtor, Float>,
+    val usersCostInTransaction: MutableMap<Debtor, Float>
 )
 
 

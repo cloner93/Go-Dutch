@@ -1,5 +1,7 @@
-package com.milad.core.refactored
+package com.milad.core
 
+import com.milad.core.type.Type
+import com.milad.core.type.TypeEqual
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock

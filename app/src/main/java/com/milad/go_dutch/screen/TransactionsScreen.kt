@@ -1,6 +1,5 @@
 package com.milad.go_dutch.screen
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,25 +19,19 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.milad.core.GoDutch
-import com.milad.core.data.PayEqual
-import com.milad.core.data.Transaction
-import com.milad.core.data.TransactionType
+import com.milad.core.type.Type
 import com.milad.go_dutch.HomeFloatingActionButton
 import com.milad.go_dutch.MyTopAppBar
-import com.milad.go_dutch.data.allUser
 import com.milad.go_dutch.data.calculationsResult
 import com.milad.go_dutch.data.groupList
-import com.milad.go_dutch.data.payers
 import com.milad.go_dutch.isScrollingUp
 
 @Composable
 fun TransactionsScreen(navController: NavHostController, index: String) {
     val lazyListState = rememberLazyListState()
-    val groupTransactionList = groupList[index.toInt()].transactions
+    val groupTransactionList: List<Type> = groupList[index.toInt()].transactions
 
     Scaffold(
         topBar = { MyTopAppBar("Create Transaction") },
@@ -48,10 +41,10 @@ fun TransactionsScreen(navController: NavHostController, index: String) {
                 "Calculate",
                 Icons.Default.Done
             ) {
-                val goDutch = GoDutch(groupTransactionList)
-                val calc = goDutch.calculateEachMember()
-                calculationsResult = calc // FIXME
 
+                groupTransactionList.forEach {
+                    calculationsResult.add(it.calculate())
+                }
                 navController.navigate("calculated/${index}")
             }
         }
@@ -73,7 +66,7 @@ fun TransactionsScreen(navController: NavHostController, index: String) {
 fun TransactionList(
     modifier: Modifier,
     navController: NavHostController,
-    list: List<Transaction>,
+    list: List<Type>,
     lazyListState: LazyListState,
     groupIndex: String
 ) {
@@ -105,7 +98,7 @@ fun TransactionList(
 }
 
 @Composable
-private fun ListItem(transaction: Transaction) {
+private fun ListItem(type: Type) {
     var expended by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -120,14 +113,14 @@ private fun ListItem(transaction: Transaction) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = transaction.name)
-                Text(text = transaction.cost.toString())
+                Text(text = type.transaction.name)
+                Text(text = type.transaction.transactionCost.toString())
             }
             AnimatedVisibility(expended) {
                 Column() {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("Payers:")
-                    transaction.payers.forEach() { (payer, cost) ->
+                    type.transaction.payers.forEach() { (payer, cost) ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -143,7 +136,7 @@ private fun ListItem(transaction: Transaction) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(text = "   All Member")
-                        Text(text = transaction.transactionType.name + "  ")
+                        Text(text = "$type  ")
                     }
                     Row(
                         modifier = Modifier
@@ -169,18 +162,4 @@ private fun ListItem(transaction: Transaction) {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun listPreview() {
-    ListItem(
-        transaction = Transaction(
-            "Last night dinner",
-            13000.0,
-            payers,
-            TransactionType.EQUAL,
-            PayEqual(allUser)
-        )
-    )
 }
