@@ -9,7 +9,9 @@ class EqualPurchaseTest {
 
     @Before
     fun setUp() {
-        equalPurchase = EqualPurchase("k", 1000)
+        val buyers = mapOf<Person,Long>(Person("Milad") to 500,Person("Mohammad") to 500)
+        val consumers = listOf<Person>(Person("Milad"),Person("Mohammad"))
+        equalPurchase = EqualPurchase("k", 1000,buyers,consumers)
     }
 
     @After
@@ -29,7 +31,7 @@ class EqualPurchaseTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun `EqualPurchase class should have non empty buyers throw exception`() {
-        equalPurchase.buyers = listOf()
+        equalPurchase.buyers = mapOf()
     }
 
     @Test(expected = IllegalArgumentException::class)
