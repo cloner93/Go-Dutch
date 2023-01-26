@@ -1,16 +1,15 @@
 package com.milad.core2
 
-import org.junit.Assert.*
-
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
 class EqualPurchaseTest {
-    lateinit var equalPurchase: EqualPurchase
+    private lateinit var equalPurchase: EqualPurchase
+
     @Before
     fun setUp() {
-        equalPurchase = EqualPurchase()
+        equalPurchase = EqualPurchase("k", 1000)
     }
 
     @After
@@ -18,13 +17,23 @@ class EqualPurchaseTest {
 
     }
 
-    @Test
-    fun `EqualPurchase class should have non empty name`(){
-        assertTrue(equalPurchase.name.isNotEmpty())
+    @Test(expected = IllegalArgumentException::class)
+    fun `EqualPurchase class with empty name should throw exception`() {
+        equalPurchase.name = ""
     }
 
-    @Test
-    fun `purchase class should positive amount`(){
-        assertTrue(equalPurchase.amount > 0)
+    @Test(expected = IllegalArgumentException::class)
+    fun `purchase class negative amount should throw exception`() {
+        equalPurchase.amount = 0
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `EqualPurchase class should have non empty buyers throw exception`() {
+        equalPurchase.buyers = listOf()
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `EqualPurchase class should have non empty consumers`() {
+        equalPurchase.consumers = listOf()
     }
 }
